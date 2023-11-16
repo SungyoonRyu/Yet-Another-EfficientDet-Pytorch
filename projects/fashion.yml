@@ -1,6 +1,6 @@
 project_name: fashionpedia
 train_set: train2020
-val_set: val2020
+val_set: test2020
 num_gpus: 1
 
 # mean and std in RGB order, actually this part should remain unchanged as long as your dataset is similar to coco.
