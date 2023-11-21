@@ -92,8 +92,8 @@ def train(opt):
     else:
         torch.manual_seed(42)
 
-    opt.saved_path = opt.saved_path + f'/{params.project_name}/'
-    opt.log_path = opt.log_path + f'/{params.project_name}/tensorboard/'
+    opt.saved_path = opt.saved_path + f'/{params.project_name}_{opt.compound_coef}_HO-{opt.head_only}/'
+    opt.log_path = opt.log_path + f'/{params.project_name}_{opt.compound_coef}_HO-{opt.head_only}/tensorboard/'
     os.makedirs(opt.log_path, exist_ok=True)
     os.makedirs(opt.saved_path, exist_ok=True)
 
