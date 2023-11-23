@@ -100,6 +100,7 @@ class CocoDatasetForAlbumentations(CocoDataset):
             )
             img = transformed['image']
 
+        bboxes = self.transform_bboxes(transformed['bboxes'])
         concatened = self.concat_annotations(bboxes, cat_ids)
         
         sample = {'img': img, 'annot': concatened, 'scale': 1.0}
@@ -127,6 +128,13 @@ class CocoDatasetForAlbumentations(CocoDataset):
             category_ids = np.append(category_ids, np.array([[a['category_id'] - 1]]), axis=0)
 
         return bboxes, category_ids
+    
+    def transform_bboxes(self, bboxes):
+        # transform from [x, y, w, h] to [x1, y1, x2, y2]
+        bboxes[:, 2] = bboxes[:, 0] + bboxes[:, 2]
+        bboxes[:, 3] = bboxes[:, 1] + bboxes[:, 3]
+
+        return bboxes
     
     def concat_annotations(self, bboxes, category_ids):
         # concat bboxes and category_ids
