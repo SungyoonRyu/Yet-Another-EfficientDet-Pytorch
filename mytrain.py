@@ -122,7 +122,7 @@ def train(opt):
         A.LongestMaxSize(max_size=input_sizes[opt.compound_coef]),
         A.Normalize(mean=params.mean, std=params.std),
         ToModelFormat()
-    ], bbox_params=A.BboxParams(format='coco', label_fields=['class_labels', 'class_categories']))
+    ], bbox_params=A.BboxParams(format='coco'))
     training_set = CocoDataset(
         root_dir=os.path.join(opt.data_path, params.project_name),
         set=params.train_set,
