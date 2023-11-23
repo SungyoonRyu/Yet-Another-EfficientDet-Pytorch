@@ -131,6 +131,7 @@ class CocoDatasetForAlbumentations(CocoDataset):
     
     def transform_bboxes(self, bboxes):
         # transform from [x, y, w, h] to [x1, y1, x2, y2]
+        bboxes = np.array(bboxes)
         bboxes[:, 2] = bboxes[:, 0] + bboxes[:, 2]
         bboxes[:, 3] = bboxes[:, 1] + bboxes[:, 3]
 
