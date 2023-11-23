@@ -121,7 +121,7 @@ def train(opt):
         A.HorizontalFlip(p=0.5),
         A.LongestMaxSize(max_size=input_sizes[opt.compound_coef]),
         A.Normalize(mean=params.mean, std=params.std),
-    ], bbox_params=A.BboxParams(format='pascal_voc'))
+    ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
     training_set = CocoDatasetForAlbumentations(
         root_dir=os.path.join(opt.data_path, params.project_name),
         set=params.train_set,
