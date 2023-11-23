@@ -19,8 +19,8 @@ from torchvision import transforms
 from tqdm.autonotebook import tqdm
 
 from backbone import EfficientDetBackbone
-from efficientdet.mydataset import CocoDataset, Resizer, Normalizer, Augmenter, collater
-from efficientdet.mydataset import ToAlbumFormat, ToModelFormat
+from efficientdet.mydataset import CocoDataset, CocoDatasetForAlbumentations
+from efficientdet.mydataset import Resizer, Normalizer, Augmenter, collater
 from efficientdet.loss import FocalLoss
 from utils.sync_batchnorm import patch_replication_callback
 from utils.utils import replace_w_sync_bn, CustomDataParallel, get_last_weights, init_weights, boolean_string
@@ -121,9 +121,8 @@ def train(opt):
         A.HorizontalFlip(p=0.5),
         A.LongestMaxSize(max_size=input_sizes[opt.compound_coef]),
         A.Normalize(mean=params.mean, std=params.std),
-        ToModelFormat()
     ], bbox_params=A.BboxParams(format='pascal_voc'))
-    training_set = CocoDataset(
+    training_set = CocoDatasetForAlbumentations(
         root_dir=os.path.join(opt.data_path, params.project_name),
         set=params.train_set,
         transform=training_transform

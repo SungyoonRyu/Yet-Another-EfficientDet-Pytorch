@@ -44,7 +44,7 @@ class CocoDataset(Dataset):
         annot = self.load_annotations(idx)
         sample = {'img': img, 'annot': annot}
         if self.transform:
-            sample = self.transform(image=img, bboxes=annot)
+            sample = self.transform(sample)
         return sample
 
     def load_image(self, image_index):
@@ -82,6 +82,55 @@ class CocoDataset(Dataset):
         annotations[:, 3] = annotations[:, 1] + annotations[:, 3]
 
         return annotations
+
+class CocoDatasetForAlbumentations(CocoDataset):
+    def __init__(self, root_dir, set='train2017', transform=None):
+        super().__init__(root_dir, set, transform)
+
+    
+    def __getitem__(self, idx):
+        img = self.load_image(idx)
+        bboxes, cat_ids = self.load_annotations(idx)
+
+        if self.transform:
+            transformed = self.transform(
+                image=img,
+                bboxes=bboxes,
+                category_id=cat_ids
+            )
+            img = transformed['image']
+
+        concatened = self.transfrom_annotations(bboxes, cat_ids)
+        
+        sample = {'img': img, 'annot': concatened}
+        return sample
+
+
+    def load_annotations(self, image_index):
+        # get ground truth annotations
+        annotations_ids = self.coco.getAnnIds(imgIds=self.image_ids[image_index], iscrowd=False)
+        bboxes = np.zeros((0, 4))
+        category_ids = np.zeros((0, 1))
+
+        # some images appear to miss annotations
+        if len(annotations_ids) == 0:
+            return bboxes
+
+        # parse annotations
+        coco_annotations = self.coco.loadAnns(annotations_ids)
+        for a in coco_annotations:
+            # some annotations have basically no width / height, skip them
+            if a['bbox'][2] < 1 or a['bbox'][3] < 1:
+                continue
+            
+            bboxes = np.append(bboxes, np.array([a['bbox']]), axis=0)
+            category_ids = np.append(category_ids, np.array([[a['category_id'] - 1]]), axis=0)
+
+        return bboxes, category_ids
+    
+    def transfrom_annotations(self, bboxes, category_ids):
+        # concat bboxes and category_ids
+        return np.concatenate((bboxes, category_ids), axis=1)
 
 
 def collater(data):
