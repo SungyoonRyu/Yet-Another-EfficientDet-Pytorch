@@ -10,6 +10,8 @@ import traceback
 import numpy as np
 import torch
 import yaml
+
+import albumentations as A
 from tensorboardX import SummaryWriter
 from torch import nn
 from torch.utils.data import DataLoader
@@ -110,10 +112,17 @@ def train(opt):
                   'num_workers': opt.num_workers}
 
     input_sizes = [512, 640, 768, 896, 1024, 1280, 1280, 1536, 1536]
-    training_set = CocoDataset(root_dir=os.path.join(opt.data_path, params.project_name), set=params.train_set,
-                               transform=transforms.Compose([Normalizer(mean=params.mean, std=params.std),
-                                                             Augmenter(),
-                                                             Resizer(input_sizes[opt.compound_coef])]))
+
+    training_transform = A.Compose([
+        A.HorizontalFlip(p=0.5),
+        A.normalize(mean=params.mean, std=params.std, max_pixel_value=255.0, p=1.0),
+        A.resize(height=input_sizes[opt.compound_coef], width=input_sizes[opt.compound_coef], p=1),
+    ], bbox_params=A.BboxParams(format='coco', label_fields=['category_ids']))
+    training_set = CocoDataset(
+        root_dir=os.path.join(opt.data_path, params.project_name),
+        set=params.train_set,
+        transform=training_transform
+    )
     training_generator = DataLoader(training_set, **training_params)
 
     val_set = CocoDataset(root_dir=os.path.join(opt.data_path, params.project_name), set=params.val_set,
