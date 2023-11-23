@@ -187,8 +187,10 @@ def train(opt):
 
     if opt.optim == 'adamw':
         optimizer = torch.optim.AdamW(model.parameters(), opt.lr)
-    else:
+    elif opt.optim == 'sgd':
         optimizer = torch.optim.SGD(model.parameters(), opt.lr, momentum=0.9, nesterov=True)
+    else:
+        raise NotImplementedError(f'Optimizer [{opt.optim}] is not supported.')
 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, verbose=True)
 
