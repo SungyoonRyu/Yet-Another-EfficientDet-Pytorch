@@ -91,7 +91,6 @@ class CocoDatasetForAlbumentations(CocoDataset):
     def __getitem__(self, idx):
         img = self.load_image(idx)
         bboxes, cat_ids = self.load_annotations(idx)
-        scales = np.ones_like(cat_ids)
 
         if self.transform:
             transformed = self.transform(
@@ -103,7 +102,7 @@ class CocoDatasetForAlbumentations(CocoDataset):
 
         concatened = self.transfrom_annotations(bboxes, cat_ids)
         
-        sample = {'img': img, 'annot': concatened, 'scale': scales}
+        sample = {'img': img, 'annot': concatened, 'scale': 1.0}
         return sample
 
 
