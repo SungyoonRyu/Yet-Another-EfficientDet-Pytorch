@@ -44,7 +44,7 @@ def get_args():
     parser.add_argument('--optim', type=str, default='adamw', help='select optimizer for training, '
                                                                    'suggest using \'admaw\' until the'
                                                                    ' very final stage then switch to \'sgd\'')
-    parser.add_argument('--lrsch', type=str, default='pleteau', help='select lr scheduler for training.'
+    parser.add_argument('--lrsch', type=str, default='plateau', help='select lr scheduler for training.'
                                                                      'default: \'pleteau\''
                                                                      'possible options: \'pleteau\'')
     parser.add_argument('--num_epochs', type=int, default=500)
