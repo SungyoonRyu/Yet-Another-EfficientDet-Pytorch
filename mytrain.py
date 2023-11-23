@@ -37,6 +37,7 @@ class Params:
 def get_args():
     parser = argparse.ArgumentParser('Yet Another EfficientDet Pytorch: SOTA object detection network - Zylo117')
     parser.add_argument('-p', '--project', type=str, default='coco', help='project file that contains parameters')
+    parser.add_argument('-a', '--alias', type=str, default='none', help='alias')
     parser.add_argument('-c', '--compound_coef', type=int, default=0, help='coefficients of efficientdet')
     parser.add_argument('-n', '--num_workers', type=int, default=12, help='num_workers of dataloader')
     parser.add_argument('--batch_size', type=int, default=12, help='The number of images per batch among all devices')
@@ -98,8 +99,8 @@ def train(opt):
     else:
         torch.manual_seed(42)
 
-    opt.saved_path = opt.saved_path + f'/{params.project_name}_{opt.compound_coef}_HO-{opt.head_only}/'
-    opt.log_path = opt.log_path + f'/{params.project_name}_{opt.compound_coef}_HO-{opt.head_only}/tensorboard/'
+    opt.saved_path = opt.saved_path + f'/{opt.project}_{opt.alias}_d{opt.compound_coef}_HO-{opt.head_only}/'
+    opt.log_path = opt.log_path + f'/{opt.project}_{opt.alias}_d{opt.compound_coef}_HO-{opt.head_only}/tensorboard/'
     os.makedirs(opt.log_path, exist_ok=True)
     os.makedirs(opt.saved_path, exist_ok=True)
 
