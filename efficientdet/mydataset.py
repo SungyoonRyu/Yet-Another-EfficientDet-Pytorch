@@ -152,6 +152,7 @@ def collater(data):
         annot_padded = np.ones((len(annots), 1, 5)) * -1
 
     imgs = torch.from_numpy(imgs)
+    annot_padded = torch.from_numpy(annot_padded)
     imgs = imgs.permute(0, 3, 1, 2)
 
     return {'img': imgs, 'annot': annot_padded, 'scale': scales}
