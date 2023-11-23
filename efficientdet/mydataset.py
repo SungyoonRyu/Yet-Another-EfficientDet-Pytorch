@@ -169,3 +169,16 @@ class Normalizer(object):
         image, annots = sample['img'], sample['annot']
 
         return {'img': ((image.astype(np.float32) - self.mean) / self.std), 'annot': annots}
+
+
+class ToAlbumFormat(object):
+    def __call__(self, sample):
+        image, bboxes = sample['img'], sample['annot']
+        return {'image': image, 'bboxes': bboxes}
+    
+
+class ToModelFormat(object):
+    def __call__(self, sample):
+        image, annots = sample['image'], sample['bboxes']
+        return {'img': image, 'annot': annots}
+

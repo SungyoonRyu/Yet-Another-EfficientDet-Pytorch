@@ -20,6 +20,7 @@ from tqdm.autonotebook import tqdm
 
 from backbone import EfficientDetBackbone
 from efficientdet.mydataset import CocoDataset, Resizer, Normalizer, Augmenter, collater
+from efficientdet.mydataset import ToAlbumFormat, ToModelFormat
 from efficientdet.loss import FocalLoss
 from utils.sync_batchnorm import patch_replication_callback
 from utils.utils import replace_w_sync_bn, CustomDataParallel, get_last_weights, init_weights, boolean_string
@@ -114,9 +115,11 @@ def train(opt):
     input_sizes = [512, 640, 768, 896, 1024, 1280, 1280, 1536, 1536]
 
     training_transform = A.Compose([
+        ToAlbumFormat(),
         A.HorizontalFlip(p=0.5),
         A.resize(height=input_sizes[opt.compound_coef], width=input_sizes[opt.compound_coef]),
         A.normalize(mean=params.mean, std=params.std, max_pixel_value=255.0),
+        ToModelFormat()
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_ids']))
     training_set = CocoDataset(
         root_dir=os.path.join(opt.data_path, params.project_name),
