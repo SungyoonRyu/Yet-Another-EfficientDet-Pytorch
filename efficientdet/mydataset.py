@@ -100,7 +100,7 @@ class CocoDatasetForAlbumentations(CocoDataset):
             )
             img = transformed['image']
 
-        concatened = self.transfrom_annotations(bboxes, cat_ids)
+        concatened = self.concat_annotations(bboxes, cat_ids)
         
         sample = {'img': img, 'annot': concatened, 'scale': 1.0}
         return sample
@@ -128,9 +128,9 @@ class CocoDatasetForAlbumentations(CocoDataset):
 
         return bboxes, category_ids
     
-    def transfrom_annotations(self, bboxes, category_ids):
+    def concat_annotations(self, bboxes, category_ids):
         # concat bboxes and category_ids
-        return np.concatenate((bboxes, category_ids), axis=1)
+        return np.concatenate((bboxes, category_ids), axis=1, dtype=np.float32)
 
 
 def collater(data):
@@ -138,20 +138,20 @@ def collater(data):
     annots = [s['annot'] for s in data]
     scales = [s['scale'] for s in data]
 
-    imgs = torch.from_numpy(np.stack(imgs, axis=0))
+    imgs = np.stack(imgs, axis=0)
 
     max_num_annots = max(annot.shape[0] for annot in annots)
 
     if max_num_annots > 0:
-
-        annot_padded = torch.ones((len(annots), max_num_annots, 5)) * -1
+        annot_padded = np.ones((len(annots), max_num_annots, 5)) * -1
 
         for idx, annot in enumerate(annots):
             if annot.shape[0] > 0:
                 annot_padded[idx, :annot.shape[0], :] = annot
     else:
-        annot_padded = torch.ones((len(annots), 1, 5)) * -1
+        annot_padded = np.ones((len(annots), 1, 5)) * -1
 
+    imgs = torch.from_numpy(imgs)
     imgs = imgs.permute(0, 3, 1, 2)
 
     return {'img': imgs, 'annot': annot_padded, 'scale': scales}
