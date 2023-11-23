@@ -132,7 +132,7 @@ def train(opt):
         Resizer(input_size)
     ])
 
-    training_set = CocoDatasetForAlbumentations(
+    training_set = CocoDataset(
         root_dir=os.path.join(opt.data_path, params.project_name),
         set=params.train_set,
         transform=training_transform_original
