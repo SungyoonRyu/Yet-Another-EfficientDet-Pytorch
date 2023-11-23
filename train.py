@@ -44,6 +44,9 @@ def get_args():
     parser.add_argument('--optim', type=str, default='adamw', help='select optimizer for training, '
                                                                    'suggest using \'admaw\' until the'
                                                                    ' very final stage then switch to \'sgd\'')
+    parser.add_argument('--lrsch', type=str, default='pleteau', help='select lr scheduler for training.'
+                                                                     'default: \'pleteau\''
+                                                                     'possible options: \'pleteau\'')
     parser.add_argument('--num_epochs', type=int, default=500)
     parser.add_argument('--val_interval', type=int, default=1, help='Number of epoches between valing phases')
     parser.add_argument('--save_interval', type=int, default=500, help='Number of steps between saving')
@@ -192,7 +195,10 @@ def train(opt):
     else:
         raise NotImplementedError(f'Optimizer [{opt.optim}] is not supported.')
 
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, verbose=True)
+    if opt.lrsch == 'plateau':
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, verbose=True)
+    else:
+        raise NotImplementedError(f'LR Scheduler [{opt.lrsch}] is not supported.')
 
     epoch = 0
     best_loss = 1e5
@@ -237,6 +243,9 @@ def train(opt):
                     # torch.nn.utils.clip_grad_norm_(model.parameters(), 0.1)
                     optimizer.step()
 
+                    if opt.lrsch != 'plateau':
+                        scheduler.step()
+
                     epoch_loss.append(float(loss))
 
                     progress_bar.set_description(
@@ -261,7 +270,9 @@ def train(opt):
                     print('[Error]', traceback.format_exc())
                     print(e)
                     continue
-            scheduler.step(np.mean(epoch_loss))
+
+            if opt.lrsch == 'plateau':
+                scheduler.step(np.mean(epoch_loss))
 
             if epoch % opt.val_interval == 0:
                 model.eval()
