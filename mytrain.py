@@ -117,8 +117,8 @@ def train(opt):
     training_transform = A.Compose([
         ToAlbumFormat(),
         A.HorizontalFlip(p=0.5),
-        A.resize(height=input_sizes[opt.compound_coef], width=input_sizes[opt.compound_coef]),
-        A.normalize(mean=params.mean, std=params.std, max_pixel_value=255.0),
+        A.LongestMaxSize(max_size=input_sizes[opt.compound_coef]),
+        A.Normalize(mean=params.mean, std=params.std),
         ToModelFormat()
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_ids']))
     training_set = CocoDataset(
