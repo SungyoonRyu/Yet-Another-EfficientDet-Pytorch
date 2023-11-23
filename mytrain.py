@@ -118,7 +118,6 @@ def train(opt):
     input_sizes = [512, 640, 768, 896, 1024, 1280, 1280, 1536, 1536]
 
     training_transform = A.Compose([
-        ToAlbumFormat(),
         A.HorizontalFlip(p=0.5),
         A.LongestMaxSize(max_size=input_sizes[opt.compound_coef]),
         A.Normalize(mean=params.mean, std=params.std),
