@@ -125,10 +125,17 @@ def train(opt):
         A.Normalize(mean=params.mean, std=params.std),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT)
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
+
+    training_transform_original = transforms.Compose([
+        Normalizer(mean=params.mean, std=params.std),
+        Augmenter(),
+        Resizer(input_size)
+    ])
+
     training_set = CocoDatasetForAlbumentations(
         root_dir=os.path.join(opt.data_path, params.project_name),
         set=params.train_set,
-        transform=training_transform
+        transform=training_transform_original
     )
     training_generator = DataLoader(training_set, **training_params)
 
