@@ -125,7 +125,7 @@ class CocoDatasetForAlbumentations(CocoDataset):
                 continue
             
             bboxes = np.append(bboxes, np.array([a['bbox']]), axis=0)
-            category_ids = np.append(category_ids, np.array([[a['category_id'] - 1]]), axis=0)
+            category_ids = np.append(category_ids, np.array([[a['category_id']]]), axis=0)
 
         return bboxes, category_ids
     
