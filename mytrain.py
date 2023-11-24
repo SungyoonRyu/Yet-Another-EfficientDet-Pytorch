@@ -122,9 +122,9 @@ def train(opt):
 
     input_size = input_sizes[opt.compound_coef]
     training_transform = A.Compose([
-        A.HorizontalFlip(p=0.5),
+        A.Normalize(max_pixel_value=1.0),
         A.LongestMaxSize(max_size=input_size),
-        A.Normalize(mean=params.mean, std=params.std),
+        A.HorizontalFlip(p=0.5),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.CENTER, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
 
@@ -143,7 +143,7 @@ def train(opt):
 
     val_transform = A.Compose([
         A.LongestMaxSize(max_size=input_size),
-        A.Normalize(mean=params.mean, std=params.std),
+        A.Normalize(max_pixel_value=1.0),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.CENTER, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
     val_set = CocoDatasetForAlbumentations(
