@@ -105,7 +105,7 @@ def evaluate_coco(img_path, set_name, image_ids, coco, model, threshold=0.05):
 
                 image_result = {
                     'image_id': image_id,
-                    'category_id': label + 1,
+                    'category_id': label,
                     'score': float(score),
                     'bbox': box.tolist(),
                 }
