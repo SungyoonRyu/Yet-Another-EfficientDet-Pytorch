@@ -16,6 +16,7 @@ import os
 import argparse
 import torch
 import yaml
+from datetime import datetime
 from tqdm import tqdm
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
@@ -43,6 +44,7 @@ use_float16 = args.float16
 override_prev_results = args.override
 project_name = args.project
 weights_path = f'weights/efficientdet-d{compound_coef}.pth' if args.weights is None else args.weights
+time_now = datetime.now().strftime("%m%d-%H%M%S")
 
 print(f'running coco-style evaluation on project {project_name}, weights {weights_path}...')
 
@@ -116,7 +118,7 @@ def evaluate_coco(img_path, set_name, image_ids, coco, model, threshold=0.05):
         raise Exception('the model does not provide any valid output, check model architecture and the data input')
 
     # write output
-    filepath = f'{set_name}_bbox_results.json'
+    filepath = f'bbox_files/{set_name}_{time_now}_bbox_results.json'
     if os.path.exists(filepath):
         os.remove(filepath)
     json.dump(results, open(filepath, 'w'), indent=4)
@@ -143,7 +145,7 @@ if __name__ == '__main__':
     coco_gt = COCO(VAL_GT)
     image_ids = coco_gt.getImgIds()[:MAX_IMAGES]
     
-    if override_prev_results or not os.path.exists(f'{SET_NAME}_bbox_results.json'):
+    if override_prev_results or not os.path.exists(f'bbox_files/{SET_NAME}_{time_now}_bbox_results.json'):
         model = EfficientDetBackbone(compound_coef=compound_coef, num_classes=len(obj_list),
                                      ratios=eval(params['anchors_ratios']), scales=eval(params['anchors_scales']))
         model.load_state_dict(torch.load(weights_path, map_location=torch.device('cpu')))
@@ -158,4 +160,4 @@ if __name__ == '__main__':
 
         evaluate_coco(VAL_IMGS, SET_NAME, image_ids, coco_gt, model)
 
-    _eval(coco_gt, image_ids, f'{SET_NAME}_bbox_results.json')
+    _eval(coco_gt, image_ids, f'bbox_files/{SET_NAME}_{time_now}_bbox_results.json')
