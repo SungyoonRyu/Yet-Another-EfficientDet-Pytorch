@@ -123,9 +123,9 @@ def train(opt):
     input_size = input_sizes[opt.compound_coef]
     training_transform = A.Compose([
         A.Normalize(max_pixel_value=1.0),
-        A.LongestMaxSize(max_size=input_size),
         A.HorizontalFlip(p=0.5),
-        A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.CENTER, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
+        A.LongestMaxSize(max_size=input_size),
+        A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
 
     training_transform_original = transforms.Compose([
@@ -144,7 +144,7 @@ def train(opt):
     val_transform = A.Compose([
         A.LongestMaxSize(max_size=input_size),
         A.Normalize(max_pixel_value=1.0),
-        A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.CENTER, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
+        A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
     val_set = CocoDatasetForAlbumentations(
         root_dir=os.path.join(opt.data_path, params.project_name),
