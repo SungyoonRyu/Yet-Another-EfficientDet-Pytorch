@@ -7,11 +7,11 @@ import datetime
 import os
 import traceback
 
+import albumentations as A
+import cv2
 import numpy as np
 import torch
 import yaml
-
-import albumentations as A
 from tensorboardX import SummaryWriter
 from torch import nn
 from torch.utils.data import DataLoader
@@ -19,11 +19,13 @@ from torchvision import transforms
 from tqdm.autonotebook import tqdm
 
 from backbone import EfficientDetBackbone
-from efficientdet.mydataset import CocoDataset, CocoDatasetForAlbumentations
-from efficientdet.mydataset import Resizer, Normalizer, Augmenter, collater
 from efficientdet.loss import FocalLoss
+from efficientdet.mydataset import (Augmenter, CocoDataset,
+                                    CocoDatasetForAlbumentations, Normalizer,
+                                    Resizer, collater)
 from utils.sync_batchnorm import patch_replication_callback
-from utils.utils import replace_w_sync_bn, CustomDataParallel, get_last_weights, init_weights, boolean_string
+from utils.utils import (CustomDataParallel, boolean_string, get_last_weights,
+                         init_weights, replace_w_sync_bn)
 
 
 class Params:
@@ -123,7 +125,7 @@ def train(opt):
         A.HorizontalFlip(p=0.5),
         A.LongestMaxSize(max_size=input_size),
         A.Normalize(mean=params.mean, std=params.std),
-        A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT)
+        A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.CENTER, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
 
     training_transform_original = transforms.Compose([
