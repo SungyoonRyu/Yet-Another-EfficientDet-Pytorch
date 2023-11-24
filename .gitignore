@@ -1,6 +1,10 @@
 # Constom
 logs/
+<<<<<<< HEAD
 bbox_files/
+=======
+albumentations/outputs/
+>>>>>>> 6d5837c (Add AutoAlbumentations for image classification)
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
