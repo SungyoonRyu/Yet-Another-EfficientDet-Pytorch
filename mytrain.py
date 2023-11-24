@@ -68,6 +68,8 @@ def get_args():
     parser.add_argument('--debug', type=boolean_string, default=False,
                         help='whether visualize the predicted boxes of training, '
                              'the output images will be in test/')
+    parser.add_argument('--seed', type=int, default=42,
+                        help='random seed.')
 
     args = parser.parse_args()
     return args
@@ -97,9 +99,9 @@ def train(opt):
         os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
     if torch.cuda.is_available():
-        torch.cuda.manual_seed(42)
+        torch.cuda.manual_seed(opt.seed)
     else:
-        torch.manual_seed(42)
+        torch.manual_seed(opt.seed)
 
     opt.saved_path = opt.saved_path + f'/{opt.project}_{opt.alias}_d{opt.compound_coef}_HO-{opt.head_only}/'
     opt.log_path = opt.log_path + f'/{opt.project}_{opt.alias}_d{opt.compound_coef}_HO-{opt.head_only}/tensorboard/'
@@ -142,8 +144,8 @@ def train(opt):
     training_generator = DataLoader(training_set, **training_params)
 
     val_transform = A.Compose([
-        A.LongestMaxSize(max_size=input_size),
         A.Normalize(max_pixel_value=1.0),
+        A.LongestMaxSize(max_size=input_size),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
     val_set = CocoDatasetForAlbumentations(
