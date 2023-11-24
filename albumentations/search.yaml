@@ -62,7 +62,7 @@ data:
   dataloader:
     batch_size: 16
 trainer:
-  gpus: 0
+  gpus: 1
 # Number of GPUs to train on. Set to `0` or None` to use CPU for training.
 # More detailed description - https://pytorch-lightning.readthedocs.io/en/stable/common/trainer.html#gpus
 
