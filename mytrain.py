@@ -14,7 +14,7 @@ import torch
 import yaml
 from tensorboardX import SummaryWriter
 from torch import nn
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Subset
 from torchvision import transforms
 from tqdm.autonotebook import tqdm
 
@@ -136,7 +136,7 @@ def train(opt):
         Augmenter(),
         Resizer(input_size)
     ])
-    torch.utils.data.Subset()
+    Subset(training_set, list(range(0, 4600)))
     training_set = CocoDatasetForAlbumentations(
         root_dir=os.path.join(opt.data_path, params.project_name),
         set=params.train_set,
