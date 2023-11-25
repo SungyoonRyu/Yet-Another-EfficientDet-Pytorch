@@ -127,6 +127,7 @@ def train(opt):
     input_size = input_sizes[opt.compound_coef]
     training_transform = A.Compose([
         A.Normalize(max_pixel_value=1.0),
+        A.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1, p=0.5),
         A.HorizontalFlip(p=0.5),
         A.BBoxSafeRandomCrop(erosion_rate=0.1, p=0.5),
         A.LongestMaxSize(max_size=input_size),
