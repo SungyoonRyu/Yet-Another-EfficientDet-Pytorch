@@ -70,6 +70,8 @@ def get_args():
                              'the output images will be in test/')
     parser.add_argument('--seed', type=int, default=42,
                         help='random seed.')
+    parser.add_argument('--subset', type=boolean_string, default=False,
+                        help='whether to use subset of dataset for training')
 
     args = parser.parse_args()
     return args
@@ -141,7 +143,9 @@ def train(opt):
         set=params.train_set,
         transform=training_transform
     )
-    # training_set = Subset(training_set, list(range(0, 4600)))
+    
+    if opt.subset:
+        training_set = Subset(training_set, list(range(0, len(training_set), 10)))
     
     training_generator = DataLoader(training_set, **training_params)
 
