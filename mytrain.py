@@ -126,7 +126,7 @@ def train(opt):
     training_transform = A.Compose([
         A.Normalize(max_pixel_value=1.0),
         A.HorizontalFlip(p=0.5),
-        # A.BBoxSafeRandomCrop(erosion_rate=0.1, p=0.5),
+        A.BBoxSafeRandomCrop(erosion_rate=0.1, p=0.5),
         A.LongestMaxSize(max_size=input_size),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
     ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
