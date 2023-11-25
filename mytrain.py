@@ -231,13 +231,7 @@ def train(opt):
     if opt.lrsch == 'plateau':
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=3, verbose=True)
     elif opt.lrsch == 'cawr':
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
-            optimizer,
-            T_0=1,
-            T_mult=1,
-            eta_min=0,
-            last_epoch=-1
-        )
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=5, T_mult=2)
     else:
         raise NotImplementedError(f'LR Scheduler [{opt.lrsch}] is not supported.')
 
