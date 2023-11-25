@@ -127,7 +127,7 @@ def train(opt):
     input_size = input_sizes[opt.compound_coef]
     training_transform = A.Compose([
         A.Normalize(max_pixel_value=1.0),
-        A.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.03, p=1),
+        # A.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.03, p=1),
         A.HorizontalFlip(p=0.5),
         A.BBoxSafeRandomCrop(erosion_rate=0.1, p=0.5),
         A.LongestMaxSize(max_size=input_size),
@@ -307,7 +307,10 @@ def train(opt):
                     print('[Error]', traceback.format_exc())
                     print(e)
                     continue
-            scheduler.step(np.mean(epoch_loss))
+            if opt.lrsch == 'plateau':
+                scheduler.step(np.mean(epoch_loss))
+            else:
+                scheduler.step()
 
             if epoch % opt.val_interval == 0:
                 model.eval()
