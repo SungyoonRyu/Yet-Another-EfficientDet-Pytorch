@@ -141,7 +141,7 @@ def train(opt):
         set=params.train_set,
         transform=training_transform
     )
-    training_set = Subset(training_set, list(range(0, 4600)))
+    # training_set = Subset(training_set, list(range(0, 4600)))
     
     training_generator = DataLoader(training_set, **training_params)
 
