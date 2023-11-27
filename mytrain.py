@@ -126,7 +126,6 @@ def train(opt):
 
     input_size = input_sizes[opt.compound_coef]
     training_transform = A.Compose([
-        A.Normalize(max_pixel_value=1.0),
         A.HorizontalFlip(p=0.5),
         A.OneOf([
             A.Compose([
@@ -134,11 +133,13 @@ def train(opt):
                 A.FancyPCA(alpha=0.1, p=1),
                 A.ToFloat(max_value=255.0),
             ]),
-            A.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.05, p=1),
+            A.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0, p=1),
         ], p=1),
+        A.Normalize(max_pixel_value=1.0),
         A.OneOf([
             A.BBoxSafeRandomCrop(erosion_rate=0.1, p=1),
-            A.SafeRotate(limit=5, p=1, border_mode=cv2.BORDER_REPLICATE, value=[0, 0, 0]),
+            A.Rotate(limit=5, p=1, border_mode=cv2.BORDER_REPLICATE),
+            A.NoOp(p=1),
         ], p=1),
         A.LongestMaxSize(max_size=input_size),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
