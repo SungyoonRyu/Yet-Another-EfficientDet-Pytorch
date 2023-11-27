@@ -92,17 +92,27 @@ class CocoDatasetForAlbumentations(CocoDataset):
         img = self.load_image(idx)
         bboxes, cat_ids = self.load_annotations(idx)
 
+        # if self.transform:
+        #     transformed = self.transform(
+        #         image=img,
+        #         bboxes=bboxes,
+        #         category_id=cat_ids
+        #     )
+        #     img = transformed['image']
+
+        # bboxes = self.transform_bboxes(transformed['bboxes'])
+        # concatened = self.concat_annotations(bboxes, transformed['category_id'])
+
         if self.transform:
+            concatened = self.concat_annotations(bboxes, cat_ids)
             transformed = self.transform(
                 image=img,
-                bboxes=bboxes,
-                category_id=cat_ids
+                bboxes=concatened,
             )
             img = transformed['image']
 
-        bboxes = self.transform_bboxes(transformed['bboxes'])
-        concatened = self.concat_annotations(bboxes, transformed['category_id'])
-        
+        concatened = self.transform_bboxes(transformed['bboxes'])
+
         sample = {'img': img, 'annot': concatened, 'scale': 1.0}
         return sample
 

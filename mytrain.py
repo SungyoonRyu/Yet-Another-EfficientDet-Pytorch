@@ -143,7 +143,7 @@ def train(opt):
         ], p=1),
         A.LongestMaxSize(max_size=input_size),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
-    ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id'], min_visibility=0.3))
+    ], bbox_params=A.BboxParams(format='coco', min_visibility=0.3))
 
     training_transform_original = transforms.Compose([
         Normalizer(mean=params.mean, std=params.std),
