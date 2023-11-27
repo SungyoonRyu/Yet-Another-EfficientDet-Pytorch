@@ -137,7 +137,7 @@ def train(opt):
         ], p=1),
         A.Normalize(max_pixel_value=1.0),
         A.OneOf([
-            A.RandomCropFromBorders(0.1, 0.1, 0.1, 0.1, p=1),
+            A.BBoxSafeRandomCrop(erosion_rate=0.2, p=1),
             A.Rotate(limit=5, p=1, border_mode=cv2.BORDER_REPLICATE),
             A.NoOp(p=1),
         ], p=1),
