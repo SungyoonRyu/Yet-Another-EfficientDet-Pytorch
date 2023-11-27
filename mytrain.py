@@ -165,7 +165,7 @@ def train(opt):
         A.Normalize(max_pixel_value=1.0),
         A.LongestMaxSize(max_size=input_size),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
-    ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
+    ], bbox_params=A.BboxParams(format='coco'))
     val_set = CocoDatasetForAlbumentations(
         root_dir=os.path.join(opt.data_path, params.project_name),
         set=params.val_set,
