@@ -101,7 +101,7 @@ class CocoDatasetForAlbumentations(CocoDataset):
             img = transformed['image']
 
         bboxes = self.transform_bboxes(transformed['bboxes'])
-        concatened = self.concat_annotations(bboxes, cat_ids)
+        concatened = self.concat_annotations(bboxes, transformed['category_id'])
         
         sample = {'img': img, 'annot': concatened, 'scale': 1.0}
         return sample
