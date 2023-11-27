@@ -137,13 +137,13 @@ def train(opt):
         ], p=1),
         A.Normalize(max_pixel_value=1.0),
         A.OneOf([
-            A.BBoxSafeRandomCrop(erosion_rate=0.1, p=1),
+            A.RandomCropFromBorders(0.2, 0.2, 0.2, 0.2, p=1),
             A.Rotate(limit=5, p=1, border_mode=cv2.BORDER_REPLICATE),
             A.NoOp(p=1),
         ], p=1),
         A.LongestMaxSize(max_size=input_size),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
-    ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id']))
+    ], bbox_params=A.BboxParams(format='coco', label_fields=['category_id'], min_visibility=0.3))
 
     training_transform_original = transforms.Compose([
         Normalizer(mean=params.mean, std=params.std),
