@@ -265,6 +265,9 @@ def train(opt):
             if epoch < last_epoch:
                 continue
 
+            if opt.lrsch == 'cawr':
+                scheduler.step(epoch)
+            
             epoch_loss = []
             progress_bar = tqdm(training_generator)
             for iter, data in enumerate(progress_bar):
