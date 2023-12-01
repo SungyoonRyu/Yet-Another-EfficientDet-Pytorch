@@ -121,7 +121,7 @@ def evaluate_coco(img_path, set_name, image_ids, coco, model, threshold=0.05):
     filepath = f'bbox_files/{set_name}_{time_now}_bbox_results.json'
     if os.path.exists(filepath):
         os.remove(filepath)
-    json.dump(results, open(filepath, 'w'), indent=4)
+    json.dump(results, open(filepath, 'w+'), indent=4)
 
 
 def _eval(coco_gt, image_ids, pred_json_path):
