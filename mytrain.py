@@ -142,6 +142,7 @@ def train(opt):
             A.NoOp(p=1),
         ], p=1),
         A.LongestMaxSize(max_size=input_size),
+        A.RandomScale(scale_limit=(-0.25, 0), interpolation=cv2.INTER_LINEAR, p=0.75),
         A.PadIfNeeded(min_height=input_size, min_width=input_size, position=A.PadIfNeeded.PositionType.TOP_LEFT, border_mode=cv2.BORDER_CONSTANT, value=[0, 0, 0], p=1.0),
     ], bbox_params=A.BboxParams(format='coco', min_visibility=0.3))
 
